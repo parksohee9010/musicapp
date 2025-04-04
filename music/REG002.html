@@ -1,0 +1,370 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            min-height: 650px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .divider {
+            position: relative;
+            text-align: center;
+            margin: 10px 0 20px 0;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ccc;
+            z-index: 1;
+        }
+
+        .divider-text {
+            position: relative;
+            display: inline-block;
+            background-color: #fff;
+            padding: 0 10px;
+            font-size: 14px;
+            color: #666;
+            z-index: 2;
+        }
+
+        .email-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .password-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .password-indicator {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .match {
+            color: #28a745; /* 초록색 O */
+        }
+
+        .mismatch {
+            color: #dc3545; /* 빨간색 X */
+        }
+
+        .number-inputs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .number-input {
+            width: 28%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        .number-input::-webkit-inner-spin-button,
+        .number-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .dash {
+            font-size: 16px;
+            color: #666;
+            margin: 0 5px;
+        }
+
+        .verification-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .verification-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        .verification-input::-webkit-inner-spin-button,
+        .verification-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .verify-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .verify-button:hover {
+            background-color: #218838;
+        }
+
+        .action-button1, .action-button2 {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .action-button1:hover, .action-button2:hover {
+            background-color: #0056b3;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo-button {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #ffffff;
+            border-radius: 5px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .logo-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .logo-button img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">회원가입</div>
+        <div class="divider">
+            <span class="divider-text"></span>
+        </div>
+        <div class="email-container">
+            <input type="text" class="input-field email-input" placeholder="email">
+            <span class="password-indicator"></span>
+        </div>
+        <div class="password-container">
+            <input type="password" class="password-input" placeholder="password">
+            <span class="password-indicator"></span>
+        </div>
+        <div class="password-container">
+            <input type="password" class="password-input" placeholder="password">
+            <span class="password-indicator"></span>
+        </div>
+        <div class="number-inputs">
+            <input type="number" class="number-input" placeholder="010">
+            <span class="dash">-</span>
+            <input type="number" class="number-input" placeholder="0000">
+            <span class="dash">-</span>
+            <input type="number" class="number-input" placeholder="0000">
+        </div>
+        <button type="button" class="action-button1" onclick="location.href='https://426f-203-237-81-184.ngrok-free.app/myworkspace/numbercertification.html'">전화번호 인증</button>
+        <div class="verification-container">
+            <input type="number" class="verification-input" placeholder="인증번호 입력">
+            <button class="verify-button">확인</button>
+        </div>
+        <button class="action-button2">회원가입</button>
+        <div class="divider">
+            <span class="divider-text">다른걸로 로그인 하기</span>
+        </div>
+        <div class="logo-container">
+            <button class="logo-button">
+                <img src="google_logo.png" alt="Google Logo">
+            </button>
+            <button class="logo-button">
+                <img src="naver_logo.png" alt="Naver Logo">
+            </button>
+            <button class="logo-button">
+                <img src="kakao_logo.png" alt="Kakao Logo">
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 이메일 입력창
+        const emailInput = document.querySelector('.email-input');
+        const emailIndicator = document.querySelector('.email-container .password-indicator');
+
+        emailInput.addEventListener('focus', function() {
+            this.placeholder = '';
+        });
+        emailInput.addEventListener('blur', function() {
+            if (!this.value) {
+                this.placeholder = 'email';
+            }
+        });
+        emailInput.addEventListener('input', checkEmail);
+
+        function checkEmail() {
+            const email = emailInput.value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email) {
+                if (emailPattern.test(email)) {
+                    emailIndicator.textContent = 'O';
+                    emailIndicator.className = 'password-indicator match';
+                } else {
+                    emailIndicator.textContent = 'X';
+                    emailIndicator.className = 'password-indicator mismatch';
+                }
+            } else {
+                emailIndicator.textContent = '';
+                emailIndicator.className = 'password-indicator';
+            }
+        }
+
+        // 비밀번호 입력창
+        const passwordInputs = document.querySelectorAll('.password-input');
+        const passwordIndicators = document.querySelectorAll('.password-container .password-indicator');
+
+        passwordInputs.forEach((input, index) => {
+            input.addEventListener('focus', function() {
+                this.placeholder = '';
+            });
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.placeholder = 'password';
+                }
+            });
+            input.addEventListener('input', checkPasswords);
+        });
+
+        function checkPasswords() {
+            const pw1 = passwordInputs[0].value;
+            const pw2 = passwordInputs[1].value;
+
+            if (pw1 && pw2) {
+                if (pw1 === pw2) {
+                    passwordIndicators[0].textContent = 'O';
+                    passwordIndicators[0].className = 'password-indicator match';
+                    passwordIndicators[1].textContent = 'O';
+                    passwordIndicators[1].className = 'password-indicator match';
+                } else {
+                    passwordIndicators[0].textContent = 'X';
+                    passwordIndicators[0].className = 'password-indicator mismatch';
+                    passwordIndicators[1].textContent = 'X';
+                    passwordIndicators[1].className = 'password-indicator mismatch';
+                }
+            } else {
+                passwordIndicators[0].textContent = '';
+                passwordIndicators[0].className = 'password-indicator';
+                passwordIndicators[1].textContent = '';
+                passwordIndicators[1].className = 'password-indicator';
+            }
+        }
+
+        // 회원가입 버튼 클릭 이벤트 처리
+        const signUpButton = document.querySelector('.action-button2');
+        signUpButton.addEventListener('click', function() {
+            const email = emailInput.value;
+            const password1 = passwordInputs[0].value;
+            const password2 = passwordInputs[1].value;
+            const phoneNumbers = document.querySelectorAll('.number-input');
+            const phone1 = phoneNumbers[0].value;
+            const phone2 = phoneNumbers[1].value;
+            const phone3 = phoneNumbers[2].value;
+            const verificationCode = document.querySelector('.verification-input').value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (email && emailPattern.test(email) && password1 && password2 && phone1 && phone2 && phone3 && verificationCode && password1 === password2) {
+                alert('회원가입 성공!');
+            } else {
+                alert('회원가입 실패: 모든 필드를 채우고 올바른 이메일 형식 및 비밀번호 일치를 확인하세요.');
+            }
+        });
+    </script>
+</body>
+</html>

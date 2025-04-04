@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Écoutez - 취향 선택</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #000000;
+      color: #FFFFFF;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      max-width: 375px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 70px;
+    }
+
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .status-time {
+      font-weight: 500;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0 30px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background-color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .logo-text {
+      font-size: 32px;
+      font-weight: 700;
+      font-family: 'Times New Roman', serif;
+      letter-spacing: 0.5px;
+    }
+
+    .welcome-text {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 0 24px;
+    }
+
+    .preference-section {
+      padding: 0 20px;
+      margin-bottom: 30px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .selection-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .status-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .status-icon.complete {
+      background-color: #1DB954;
+    }
+
+    .genre-grid, .artist-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .preference-item {
+      background-color: #222;
+      border-radius: 8px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .preference-item.selected {
+      background-color: #1DB954;
+    }
+
+    .preference-background {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+    }
+
+    .preference-item.selected .preference-background {
+      opacity: 0.8;
+    }
+
+    .preference-label {
+      position: absolute;
+      bottom: 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      width: 100%;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      z-index: 2;
+    }
+
+    .continue-button {
+      background-color: #1DB954;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 16px;
+      width: calc(100% - 40px);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 30px 20px 0;
+      transition: background-color 0.2s ease;
+    }
+
+    .continue-button:hover {
+      background-color: #1ED760;
+    }
+
+    .continue-button:disabled {
+      background-color: #333;
+      color: #666;
+      cursor: default;
+    }
+
+    .selection-tracker {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .tracker-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tracker-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .tracker-dot.complete {
+      background-color: #1DB954;
+      color: white;
+    }
+
+    .tracker-label {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .check-icon {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: #1DB954;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 2;
+    }
+
+    .preference-item.selected .check-icon {
+      opacity: 1;
+    }
+
+    .selection-count {
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- 로고 -->
+    <div class="logo-container">
+      <div class="logo-icon">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+          <path d="M9 18V5l12-2v13"/>
+          <path d="M6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+          <path d="M18 13a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+        </svg>
+      </div>
+      <div class="logo-text">Écoutez</div>
+    </div>
+
+    <!-- 환영 메시지 -->
+    <div class="welcome-text">
+      <h1 class="page-title">취향을 알려주세요</h1>
+      <p class="page-subtitle">좋아하는 장르와 아티스트를 선택하여 맞춤형 음악을 추천받으세요!</p>
+    </div>
+
+    <!-- 장르 선택 섹션 -->
+    <div class="preference-section">
+      <div class="section-header">
+        <h2 class="section-title">좋아하는 장르를 선택해주세요</h2>
+        <div class="selection-status">
+          <span class="selection-count" id="genreCount">0/3</span>
+          <div class="status-icon" id="genreStatus">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="genre-grid">
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">팝</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1525362081669-2b476bb628c3?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">힙합</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">R&B</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">락</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">재즈</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1507924538820-ede94a04019d?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">클래식</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1516223725307-6f76b9ec8742?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">일렉트로닉</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://plus.unsplash.com/premium_photo-1664474898608-7537d5780e17?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"></div>
+          <div class="preference-label">K-POP</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'genre')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">인디</div>
+          <div class="check-icon">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 아티스트 선택 섹션 -->
+    <div class="preference-section">
+      <div class="section-header">
+        <h2 class="section-title">좋아하는 아티스트를 선택해주세요</h2>
+        <div class="selection-status">
+          <span class="selection-count" id="artistCount">0/3</span>
+          <div class="status-icon" id="artistStatus">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="artist-grid">
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1526218626217-dc65a29bb444?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"></div>
+          <div class="preference-label">아이유</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://plus.unsplash.com/premium_photo-1682920140924-d8b5db318d97?q=80&w=1984&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"></div>
+          <div class="preference-label">BTS</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"></div>
+          <div class="preference-label">비비</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1475137979732-b349acb6b7e3?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">뉴진스</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1521417531039-75e91486cc40?q=80&w=2029&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"></div>
+          <div class="preference-label">테일러 스위프트</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1614149162883-504ce4d13909?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">위켄드</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">엔시티</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1533584592871-abb80e6e4ea2?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')"></div>
+          <div class="preference-label">블랙핑크</div>
+          <div class="check-icon">✓</div>
+        </div>
+        <div class="preference-item" onclick="toggleSelection(this, 'artist')">
+          <div class="preference-background" style="background-image: url('https://images.unsplash.com/photo-1542628682-88321d2a4828?auto=format&fit=crop&w=500&q=80')"></div>
+          <div class="preference-label">르세라핌</div>
+          <div class="check-icon">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 진행 상태 트래커 -->
+    <div class="selection-tracker">
+      <div class="tracker-item">
+        <div class="tracker-dot" id="genreTracker">
+          ✓
+        </div>
+        <div class="tracker-label">장르</div>
+      </div>
+      <div class="tracker-item">
+        <div class="tracker-dot" id="artistTracker">
+          ✓
+        </div>
+        <div class="tracker-label">아티스트</div>
+      </div>
+    </div>
+
+    <!-- 계속 버튼 -->
+    <button class="continue-button" disabled id="continueButton" onclick="goToLogin()">
+      다음으로
+    </button>
+  </div>
+
+  <script>
+    // 장르 및 아티스트 선택 상태 추적
+    let genreSelections = 0;
+    let artistSelections = 0;
+    const minRequiredSelections = 3;
+
+    // 페이지 로드 시 초기화
+    document.addEventListener('DOMContentLoaded', function() {
+      updateUI();
+    });
+
+    // 선택 토글 함수
+    function toggleSelection(element, type) {
+      const isSelected = element.classList.toggle('selected');
+      
+      // 선택 카운터 업데이트
+      if (type === 'genre') {
+        genreSelections = isSelected ? genreSelections + 1 : genreSelections - 1;
+      } else if (type === 'artist') {
+        artistSelections = isSelected ? artistSelections + 1 : artistSelections - 1;
+      }
+      
+      // UI 업데이트
+      updateUI();
+    }
+
+    // UI 상태 업데이트
+    function updateUI() {
+      // 장르 상태 업데이트
+      document.getElementById('genreCount').textContent = `${genreSelections}/3`;
+      if (genreSelections >= minRequiredSelections) {
+        document.getElementById('genreStatus').classList.add('complete');
+        document.getElementById('genreStatus').innerHTML = '✓';
+        document.getElementById('genreTracker').classList.add('complete');
+      } else {
+        document.getElementById('genreStatus').classList.remove('complete');
+        document.getElementById('genreStatus').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/></svg>`;
+        document.getElementById('genreTracker').classList.remove('complete');
+      }
+      
+      // 아티스트 상태 업데이트
+      document.getElementById('artistCount').textContent = `${artistSelections}/3`;
+      if (artistSelections >= minRequiredSelections) {
+        document.getElementById('artistStatus').classList.add('complete');
+        document.getElementById('artistStatus').innerHTML = '✓';
+        document.getElementById('artistTracker').classList.add('complete');
+      } else {
+        document.getElementById('artistStatus').classList.remove('complete');
+        document.getElementById('artistStatus').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/></svg>`;
+        document.getElementById('artistTracker').classList.remove('complete');
+      }
+      
+      // 계속 버튼 상태 업데이트
+      const continueButton = document.getElementById('continueButton');
+      if (genreSelections >= minRequiredSelections && artistSelections >= minRequiredSelections) {
+        continueButton.disabled = false;
+      } else {
+        continueButton.disabled = true;
+      }
+    }
+
+    // 로그인 페이지로 이동
+    // 회원가입 페이지로 이동
+
+function goToLogin() {
+  // 선택된 취향 데이터를 로컬 스토리지에 저장
+  const selectedGenres = [];
+  const selectedArtists = [];
+  
+  // 선택된 장르 수집
+  document.querySelectorAll('.genre-grid .preference-item.selected').forEach(item => {
+    selectedGenres.push(item.querySelector('.preference-label').textContent);
+  });
+  
+  // 선택된 아티스트 수집
+  document.querySelectorAll('.artist-grid .preference-item.selected').forEach(item => {
+    selectedArtists.push(item.querySelector('.preference-label').textContent);
+  });
+  
+  // 로컬 스토리지에 저장
+  localStorage.setItem('selectedGenres', JSON.stringify(selectedGenres));
+  localStorage.setItem('selectedArtists', JSON.stringify(selectedArtists));
+  
+  // 회원가입 페이지로 이동
+  window.location.href = 'signup.html';
+}
+  </script>
+</body>
+</html>

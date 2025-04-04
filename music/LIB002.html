@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .back-arrow, .icon {
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .category-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .category-btn {
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .category-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .list {
+            flex: 1;
+            list-style: none;
+            overflow-y: auto;
+        }
+
+        .list-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .list-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .ad-item {
+            background-color: #ffffd0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .ad-item:hover {
+            background-color: #fff5b0;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+        }
+
+        .nav-item {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 400px) {
+            .header h1 {
+                font-size: 16px;
+            }
+
+            .list-item {
+                font-size: 14px;
+                padding: 12px 15px;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="back-arrow">←</span>
+            <h1>게시판 - 000</h1>
+            <span class="icon">🔔</span>
+        </header>
+        <div class="category-buttons">
+            <button class="category-btn">전체</button>
+            <button class="category-btn">후기</button>
+            <button class="category-btn">나눔</button>
+            <button class="category-btn">질문</button>
+        </div>
+        <ul class="list">
+            <li class="list-item" onclick="location.href='BoardContent.html'">게시글 1</li>
+            <li class="list-item">게시글 2</li>
+            <li class="list-item">게시글 3</li>
+            <li class="list-item">게시글 4</li>
+        </ul>
+        <div class="button-group">
+            <button class="btn">공지</button>
+            <button class="btn">검색</button>
+            <button class="btn">트렌드</button>
+            <button class="btn" onclick="location.href='BoardWrite.html'">글쓰기</button>
+        </div>
+    </div>
+</body>
+</html>
