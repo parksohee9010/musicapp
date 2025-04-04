@@ -99,7 +99,7 @@
             display: none;
         }
 
-        .tab-content:first-child {
+        .tab-content.active {
             display: block;
         }
 
@@ -323,6 +323,17 @@
             padding: 15px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             border: 1px solid #e6e6e6;
+            transition: transform 0.25s ease-out, height 0.25s ease-out, opacity 0.25s ease-out, margin 0.25s ease-out;
+        }
+
+        .post-item.removing {
+            transform: translateX(100%);
+            height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+            overflow: hidden;
         }
 
         .ad-item {
@@ -375,12 +386,16 @@
 
         .post-actions {
             display: flex;
-            gap: 15px;
+            justify-content: space-between;
         }
 
         .post-action {
             color: #888;
             font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
         }
 
         .write-button {
@@ -407,6 +422,117 @@
                 max-width: 480px; /* 컨테이너와 동일한 최대 너비 */
             }
         }
+
+        /* 신고 모달 스타일 */
+        .report-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-container {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .report-header {
+            padding: 15px;
+            border-bottom: 1px solid #e6e6e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .report-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .report-options {
+            padding: 15px;
+        }
+
+        .report-option {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .report-checkbox {
+            margin-right: 10px;
+            margin-top: 3px;
+            accent-color: #3a82ff;
+        }
+
+        .report-option-text {
+            font-size: 0.9rem;
+        }
+
+        .report-option-desc {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 3px;
+        }
+
+        .report-actions {
+            padding: 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #e6e6e6;
+        }
+
+        .report-cancel {
+            background-color: #f1f1f1;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .report-submit {
+            background-color: #3a82ff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 토스트 메시지 스타일 */
+        .toast-message {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            z-index: 1002;
+            font-size: 0.9rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -423,7 +549,7 @@
 
         <div class="content" id="content">
             <!-- Home 탭 콘텐츠 -->
-            <div class="tab-content" id="home-content">
+            <div class="tab-content active" id="home-content">
                 <div class="section">
                     <div class="section-title">최근추천</div>
                     <div class="grid-3x3">
@@ -436,144 +562,66 @@
                             <div class="title">포근한 밤</div>
                         </div>
                         <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1526478806334-5fd488fcaabc?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 3">
-                            <div class="title">출근길 에너지</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1507676385008-e7fb562d11f8?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 4">
-                            <div class="title">노래방 인기곡</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1437652633673-cc02b9c67a1b?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 5">
-                            <div class="title">2000년대 히트곡</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1509310102591-ea981315a517?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 6">
-                            <div class="title">운동할 때</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1550052435-6e7fa40020f5?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 7">
-                            <div class="title">힙합 믹스테잎</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1539375665275-f9de415ef9f2?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 8">
-                            <div class="title">팝 클래식</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1503591044901-09c59541db64?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 9">
-                            <div class="title">재즈 모음</div>
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&h=150&auto=format&fit=crop" alt="Playlist 3">
+                            <div class="title">드라이브 음악</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="section">
-                    <div class="section-title">최신앨범</div>
-                    <div class="grid-3x3">
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 1">
-                            <div class="title">아이유 - Lilac</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 2">
-                            <div class="title">뉴진스 - Ditto</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 3">
-                            <div class="title">방탄소년단 - Butter</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1506091403777-ad6058f2b8e2?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 4">
-                            <div class="title">블랙핑크 - Pink Venom</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1476980545274-4f0d89bf174d?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 5">
-                            <div class="title">테일러 스위프트 - Midnights</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1544016768-982d1554f0da?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 6">
-                            <div class="title">에드 시런 - =</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1483000805330-4eaf0a0d82da?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 7">
-                            <div class="title">비비 - Beam Of Light</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 8">
-                            <div class="title">NCT DREAM - Candy</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1499415479124-43c32433a620?q=80&w=150&h=150&auto=format&fit=crop" alt="Album 9">
-                            <div class="title">케이시 - Where Did We Go</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <div class="section-title">오늘의 아티스트</div>
+                    <div class="section-title">추천 아티스트</div>
                     <div class="artist-list">
                         <div class="artist-item">
                             <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1484712401471-05c7215830eb?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 1">
+                                <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=70&h=70&auto=format&fit=crop" alt="Artist 1">
                             </div>
                             <div class="artist-name">아이유</div>
                         </div>
                         <div class="artist-item">
                             <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1516389573391-5939fd487c4b?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 2">
+                                <img src="https://images.unsplash.com/photo-1604514628550-37477afdf4e3?q=80&w=70&h=70&auto=format&fit=crop" alt="Artist 2">
                             </div>
                             <div class="artist-name">BTS</div>
                         </div>
                         <div class="artist-item">
                             <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1531525797753-909788e9e93a?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 3">
-                            </div>
-                            <div class="artist-name">비비</div>
-                        </div>
-                        <div class="artist-item">
-                            <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 4">
+                                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=70&h=70&auto=format&fit=crop" alt="Artist 3">
                             </div>
                             <div class="artist-name">뉴진스</div>
                         </div>
                         <div class="artist-item">
                             <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1614583225154-5fcdda07019e?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 5">
+                                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=70&h=70&auto=format&fit=crop" alt="Artist 4">
                             </div>
-                            <div class="artist-name">테일러 스위프트</div>
+                            <div class="artist-name">비비</div>
                         </div>
                         <div class="artist-item">
                             <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1517230878791-4d28214057c2?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 6">
+                                <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=70&h=70&auto=format&fit=crop" alt="Artist 5">
                             </div>
-                            <div class="artist-name">The Weeknd</div>
-                        </div>
-                        <div class="artist-item">
-                            <div class="artist-image">
-                                <img src="https://images.unsplash.com/photo-1564379976409-79bd0786fff1?q=80&w=80&h=80&auto=format&fit=crop" alt="Artist 7">
-                            </div>
-                            <div class="artist-name">임영웅</div>
+                            <div class="artist-name">르세라핌</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="section">
-                    <div class="section-title">최근 재생목록</div>
+                    <div class="section-title">이번 주 차트</div>
                     <div class="grid-2x2">
                         <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1571397133301-3f838ea96f56?q=80&w=150&h=150&auto=format&fit=crop" alt="Recent Playlist 1">
-                            <div class="title">지난 주 인기곡</div>
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=150&h=150&auto=format&fit=crop" alt="Chart 1">
+                            <div class="title">K-POP 인기차트</div>
                         </div>
                         <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1589903308904-1010c2294adc?q=80&w=150&h=150&auto=format&fit=crop" alt="Recent Playlist 2">
-                            <div class="title">내가 만든 플레이리스트</div>
+                            <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=150&h=150&auto=format&fit=crop" alt="Chart 2">
+                            <div class="title">해외 인기차트</div>
                         </div>
                         <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1491466424936-e304919aada7?q=80&w=150&h=150&auto=format&fit=crop" alt="Recent Playlist 3">
-                            <div class="title">드라이브 음악</div>
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=150&h=150&auto=format&fit=crop" alt="Chart 3">
+                            <div class="title">댄스 인기차트</div>
                         </div>
                         <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1506920451553-4748c8099ea1?q=80&w=150&h=150&auto=format&fit=crop" alt="Recent Playlist 4">
-                            <div class="title">카페 음악</div>
+                            <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=150&h=150&auto=format&fit=crop" alt="Chart 4">
+                            <div class="title">발라드 인기차트</div>
                         </div>
                     </div>
                 </div>
@@ -584,47 +632,35 @@
                 <div class="search-container">
                     <div class="search-bar">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="아티스트, 노래, 앨범을 검색하세요">
+                        <input type="text" placeholder="아티스트, 노래, 앨범 검색">
                     </div>
-                    
-                    <div class="section-title">카테고리</div>
+
                     <div class="search-categories">
-                        <div class="category-tag">K-POP</div>
-                        <div class="category-tag">힙합</div>
-                        <div class="category-tag">팝</div>
-                        <div class="category-tag">R&B</div>
-                        <div class="category-tag">락</div>
-                        <div class="category-tag">재즈</div>
-                        <div class="category-tag">클래식</div>
-                        <div class="category-tag">일렉트로닉</div>
-                        <div class="category-tag">인디</div>
+                        <div class="category-tag">#K-POP</div>
+                        <div class="category-tag">#팝</div>
+                        <div class="category-tag">#댄스</div>
+                        <div class="category-tag">#발라드</div>
+                        <div class="category-tag">#R&B</div>
+                        <div class="category-tag">#힙합</div>
+                        <div class="category-tag">#인디</div>
+                        <div class="category-tag">#클래식</div>
                     </div>
-                    
-                    <div class="section-title">인기 검색어</div>
-                    <div class="grid-3x3">
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1557800636-894a64c1696f?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular Search 1">
-                            <div class="title">뉴진스</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular Search 2">
-                            <div class="title">아이유 라일락</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1501612780327-45045538702b?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular Search 3">
-                            <div class="title">BTS 다이너마이트</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1506091403777-ad6058f2b8e2?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular Search 4">
-                            <div class="title">블랙핑크</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular Search 5">
-                            <div class="title">세븐틴</div>
-                        </div>
-                        <div class="grid-item">
-                            <img src="https://images.unsplash.com/photo-1564379976409-79bd0786fff1?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular Search 6">
-                            <div class="title">임영웅</div>
+
+                    <div class="section">
+                        <div class="section-title">인기 검색어</div>
+                        <div class="grid-3x3">
+                            <div class="grid-item">
+                                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular 1">
+                                <div class="title">아이유 - 좋은날</div>
+                            </div>
+                            <div class="grid-item">
+                                <img src="https://images.unsplash.com/photo-1520962880247-cfaf541c8724?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular 2">
+                                <div class="title">뉴진스 - Hype Boy</div>
+                            </div>
+                            <div class="grid-item">
+                                <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=150&h=150&auto=format&fit=crop" alt="Popular 3">
+                                <div class="title">비비 - 밤양갱</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -633,151 +669,111 @@
             <!-- Community 탭 콘텐츠 -->
             <div class="tab-content" id="community-content">
                 <div class="community-content">
-                    <!-- 카테고리 버튼 -->
                     <div class="category-buttons">
                         <div class="category-btn">전체</div>
-                        <div class="category-btn">인기</div>
-                        <div class="category-btn">음악정보</div>
-                        <div class="category-btn">리뷰</div>
-                        <div class="category-btn">일상</div>
+                        <div class="category-btn">인기글</div>
+                        <div class="category-btn">음악리뷰</div>
+                        <div class="category-btn">콘서트</div>
+                        <div class="category-btn">팬아트</div>
+                        <div class="category-btn">질문</div>
                     </div>
-                    
-                    <!-- 게시글 목록 -->
+
                     <div class="post-list">
-                        <!-- 공지/광고 게시글 -->
-                        <div class="post-item ad-item">
+                        <!-- 공지 -->
+                        <div class="post-item ad-item" id="post-notice">
                             <div class="post-header">
                                 <div class="user-avatar">
-                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=40&h=40&auto=format&fit=crop" alt="Admin">
+                                    <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=40&h=40&auto=format&fit=crop" alt="Admin">
                                 </div>
                                 <div class="post-info">
-                                    <div class="user-name">Écoutez 공식</div>
-                                    <div class="post-time">공지</div>
+                                    <div class="user-name">공지사항</div>
+                                    <div class="post-time">관리자 · 1일 전</div>
                                 </div>
                             </div>
                             <div class="post-content">
-                                [공지] 5월 뮤직 페스티벌 티켓 이벤트 안내 - 댓글 참여시 추첨을 통해 페스티벌 티켓을 드립니다!
-                            </div>
-                            <div class="post-actions">
-                                <div class="post-action">
-                                    <i class="far fa-heart"></i> 521
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-comment"></i> 328
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-share-square"></i> 공유
-                                </div>
+                                커뮤니티 이용 규칙 안내드립니다. 상대방을 존중하는 대화, 저작권 보호, 개인정보 보호에 신경써주세요.
                             </div>
                         </div>
-                        
-                        <!-- 일반 게시글 -->
-                        <div class="post-item">
+
+                        <!-- 포스트 1 -->
+                        <div class="post-item" id="post-1">
                             <div class="post-header">
                                 <div class="user-avatar">
-                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=40&h=40&auto=format&fit=crop" alt="User 1">
+                                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=40&h=40&auto=format&fit=crop" alt="User 1">
                                 </div>
                                 <div class="post-info">
-                                    <div class="user-name">음악천재</div>
+                                    <div class="user-name">박공유</div>
                                     <div class="post-time">2시간 전</div>
                                 </div>
                             </div>
                             <div class="post-content">
-                                요즘 뉴진스 Ditto 노래가 너무 좋아요! 다들 들어보셨나요? 중독성이 장난 아닙니다 👍
+                                오늘 다녀온 카페. 음악과 커피의 조화가 완벽했던 곳. 아늑한 분위기에서 들었던 재즈 음악은 정말 좋았습니다. 다들 한번 가보세요!
                             </div>
                             <div class="post-actions">
                                 <div class="post-action">
-                                    <i class="far fa-heart"></i> 128
+                                    <i class="far fa-heart"></i>
+                                    <span>122</span>
                                 </div>
-                                <div class="post-action">
-                                    <i class="far fa-comment"></i> 42
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-share-square"></i> 공유
+                                <div class="post-action" onclick="openReportModal('post-1')">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                    <span>신고</span>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="post-item">
+
+                        <!-- 포스트 2 -->
+                        <div class="post-item" id="post-2">
                             <div class="post-header">
                                 <div class="user-avatar">
-                                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=40&h=40&auto=format&fit=crop" alt="User 2">
+                                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=40&h=40&auto=format&fit=crop" alt="User 2">
                                 </div>
                                 <div class="post-info">
-                                    <div class="user-name">멜로디러버</div>
-                                    <div class="post-time">5시간 전</div>
+                                    <div class="user-name">김민지</div>
+                                    <div class="post-time">4시간 전</div>
                                 </div>
                             </div>
                             <div class="post-content">
-                                아이유 '라일락' 앨범은 제 인생 앨범입니다. 특히 '라일락'과 '코인' 노래는 정말 명곡이에요! 여러분의 인생 앨범은 무엇인가요?
+                                신곡 추천합니다! 오늘 발매된 앨범 중에서 가장 좋았던 노래예요. 감성적인 멜로디와 가사가 정말 좋았어요.
                             </div>
                             <div class="post-actions">
                                 <div class="post-action">
-                                    <i class="far fa-heart"></i> 256
+                                    <i class="far fa-heart"></i>
+                                    <span>78</span>
                                 </div>
-                                <div class="post-action">
-                                    <i class="far fa-comment"></i> 78
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-share-square"></i> 공유
+                                <div class="post-action" onclick="openReportModal('post-2')">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                    <span>신고</span>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="post-item">
+
+                        <!-- 포스트 3 -->
+                        <div class="post-item" id="post-3">
                             <div class="post-header">
                                 <div class="user-avatar">
-                                    <img src="https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?q=80&w=40&h=40&auto=format&fit=crop" alt="User 3">
+                                    <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=40&h=40&auto=format&fit=crop" alt="User 3">
                                 </div>
                                 <div class="post-info">
-                                    <div class="user-name">록스타</div>
-                                    <div class="post-time">어제</div>
+                                    <div class="user-name">이준호</div>
+                                    <div class="post-time">7시간 전</div>
                                 </div>
                             </div>
                             <div class="post-content">
-                                요즘 혹시 락 음악 듣는 분들 계신가요? 저는 요새 크래쉬 & 더 로즈 많이 듣는데 추천 밴드 있으면 알려주세요 🎸🤘
+                                어제 콘서트 다녀왔어요! 라이브 무대가 정말 감동적이었고, 분위기도 너무 좋았어요. 다음 투어도 꼭 가야겠어요.
                             </div>
                             <div class="post-actions">
                                 <div class="post-action">
-                                    <i class="far fa-heart"></i> 64
+                                    <i class="far fa-heart"></i>
+                                    <span>96</span>
                                 </div>
-                                <div class="post-action">
-                                    <i class="far fa-comment"></i> 28
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-share-square"></i> 공유
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="post-item">
-                            <div class="post-header">
-                                <div class="user-avatar">
-                                    <img src="https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?q=80&w=40&h=40&auto=format&fit=crop" alt="User 4">
-                                </div>
-                                <div class="post-info">
-                                    <div class="user-name">클래식매니아</div>
-                                    <div class="post-time">2일 전</div>
-                                </div>
-                            </div>
-                            <div class="post-content">
-                                클래식 입문자에게 추천하는 명곡 리스트를 만들어봤습니다! 모차르트 '밤의 세레나데', 베토벤 '월광 소나타', 쇼팽 '녹턴'... (더보기)
-                            </div>
-                            <div class="post-actions">
-                                <div class="post-action">
-                                    <i class="far fa-heart"></i> 89
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-comment"></i> 31
-                                </div>
-                                <div class="post-action">
-                                    <i class="far fa-share-square"></i> 공유
+                                <div class="post-action" onclick="openReportModal('post-3')">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                    <span>신고</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- 게시글 작성 버튼 -->
+
                     <div class="write-button">
                         <button class="btn">글 작성하기</button>
                     </div>
@@ -785,68 +781,179 @@
             </div>
         </div>
 
-        <!-- 하단 네비게이션 바 -->
         <div class="nav-bar">
-            <div class="nav-item active" data-target="home">
+            <div class="nav-item active">
                 <i class="fas fa-home"></i>
                 <span>홈</span>
             </div>
-            <div class="nav-item" data-target="library">
+            <div class="nav-item">
                 <i class="fas fa-book"></i>
                 <span>라이브러리</span>
             </div>
-            <div class="nav-item" data-target="profile">
+            <div class="nav-item">
                 <i class="fas fa-user"></i>
                 <span>프로필</span>
             </div>
         </div>
     </div>
-    
+
+    <!-- 신고 모달 -->
+    <div class="report-modal" id="reportModal">
+        <div class="report-container">
+            <div class="report-header">
+                <div class="report-title">게시물 신고</div>
+                <button class="report-close" onclick="closeReportModal()">&times;</button>
+            </div>
+            <div class="report-options">
+                <div class="report-option">
+                    <input type="checkbox" id="report-option-1" class="report-checkbox">
+                    <div>
+                        <label for="report-option-1" class="report-option-text">스팸</label>
+                        <div class="report-option-desc">반복적인 홍보 또는 관련 없는 내용</div>
+                    </div>
+                </div>
+                <div class="report-option">
+                    <input type="checkbox" id="report-option-2" class="report-checkbox">
+                    <div>
+                        <label for="report-option-2" class="report-option-text">음란물 또는 성적인 내용</label>
+                        <div class="report-option-desc">부적절한 콘텐츠 또는 불쾌감을 주는 내용</div>
+                    </div>
+                </div>
+                <div class="report-option">
+                    <input type="checkbox" id="report-option-3" class="report-checkbox">
+                    <div>
+                        <label for="report-option-3" class="report-option-text">혐오 발언 또는 상징</label>
+                        <div class="report-option-desc">인종, 민족, 국적, 성별, 성 정체성, 종교적 성향 등을 이유로 하는 혐오 발언</div>
+                    </div>
+                </div>
+                <div class="report-option">
+                    <input type="checkbox" id="report-option-4" class="report-checkbox">
+                    <div>
+                        <label for="report-option-4" class="report-option-text">폭력적인 내용</label>
+                        <div class="report-option-desc">타인을 위협하거나 폭력을 미화하는 내용</div>
+                    </div>
+                </div>
+                <div class="report-option">
+                    <input type="checkbox" id="report-option-5" class="report-checkbox">
+                    <div>
+                        <label for="report-option-5" class="report-option-text">저작권 침해</label>
+                        <div class="report-option-desc">허가 없이 사용된 콘텐츠</div>
+                    </div>
+                </div>
+                <div class="report-option">
+                    <input type="checkbox" id="report-option-6" class="report-checkbox">
+                    <div>
+                        <label for="report-option-6" class="report-option-text">기타</label>
+                        <div class="report-option-desc">다른 이유로 신고하고 싶은 경우</div>
+                    </div>
+                </div>
+            </div>
+            <div class="report-actions">
+                <button class="report-cancel" onclick="closeReportModal()">취소</button>
+                <button class="report-submit" onclick="submitReport()">신고하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 토스트 메시지 -->
+    <div class="toast-message" id="toastMessage">
+        신고가 접수되었습니다. 검토 후 처리하겠습니다.
+    </div>
+
     <script>
-        // 탭 전환 기능
+        // 현재 활성화된 탭
+        let activeTab = 'home';
+        // 현재 신고 중인 포스트 ID
+        let currentReportPostId = null;
+
+        // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            // 상단 탭 클릭 이벤트
+            // 탭 클릭 이벤트 설정
             const tabItems = document.querySelectorAll('.tab-item');
             tabItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // 탭 활성화 표시 변경
-                    tabItems.forEach(tab => tab.classList.remove('active'));
-                    item.classList.add('active');
-                    
-                    // 해당 탭 콘텐츠 보여주기
-                    const tabName = item.getAttribute('data-tab');
-                    const tabContents = document.querySelectorAll('.tab-content');
-                    tabContents.forEach(content => {
-                        content.style.display = 'none';
-                    });
-                    const activeContent = document.getElementById(`${tabName}-content`);
-                    if (activeContent) {
-                        activeContent.style.display = 'block';
-                    }
-                });
-            });
-            
-            // 하단 네비게이션 클릭 이벤트
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    // 네비게이션 활성화 표시 변경
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    item.classList.add('active');
-                    
-                    // 라이브러리, 프로필은 별도 페이지로 이동 가능 (현재는 구현 생략)
-                    const targetName = item.getAttribute('data-target');
-                    if (targetName === 'home') {
-                        // 홈 탭으로 전환
-                        tabItems.forEach(tab => {
-                            if (tab.getAttribute('data-tab') === 'home') {
-                                tab.click();
-                            }
-                        });
-                    }
+                item.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
                 });
             });
         });
+
+        // 탭 전환 함수
+        function switchTab(tabName) {
+            // 이전 활성 탭 비활성화
+            document.querySelector(`.tab-item.active`).classList.remove('active');
+            document.querySelector(`.tab-content.active`).classList.remove('active');
+
+            // 새 탭 활성화
+            document.querySelector(`.tab-item[data-tab="${tabName}"]`).classList.add('active');
+            const newTabContent = document.getElementById(`${tabName}-content`);
+            if (newTabContent) newTabContent.classList.add('active');
+
+            // 활성 탭 업데이트
+            activeTab = tabName;
+        }
+
+        // 신고 모달 열기
+        function openReportModal(postId) {
+            document.getElementById('reportModal').style.display = 'flex';
+            currentReportPostId = postId;
+            
+            // 체크박스 초기화
+            const checkboxes = document.querySelectorAll('.report-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // 신고 모달 닫기
+        function closeReportModal() {
+            document.getElementById('reportModal').style.display = 'none';
+            currentReportPostId = null;
+        }
+
+        // 신고 제출
+        function submitReport() {
+            // 선택된 신고 이유 확인
+            const checkboxes = document.querySelectorAll('.report-checkbox');
+            let hasSelection = false;
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    hasSelection = true;
+                }
+            });
+
+            if (!hasSelection) {
+                alert('신고 이유를 한 가지 이상 선택해주세요.');
+                return;
+            }
+
+            // 신고 처리 및 포스트 제거 애니메이션
+            if (currentReportPostId) {
+                const postElement = document.getElementById(currentReportPostId);
+                if (postElement) {
+                    // 슬라이드 아웃 애니메이션 적용
+                    postElement.classList.add('removing');
+                    
+                    // 애니메이션 완료 후 요소 제거
+                    setTimeout(() => {
+                        postElement.remove();
+                    }, 250); // 애니메이션 시간과 일치시킴
+                }
+            }
+
+            // 모달 닫기
+            closeReportModal();
+
+            // 토스트 메시지 표시
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.style.display = 'block';
+            
+            // 3초 후 토스트 메시지 숨기기
+            setTimeout(() => {
+                toastMessage.style.display = 'none';
+            }, 3000);
+        }
     </script>
 </body>
 </html>
